@@ -1,0 +1,1624 @@
+<!DOCTYPE html>
+<html lang="id" class="h-full bg-slate-50">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perangkat Pembelajaran Akuntansi (PPA) - Perusahaan Jasa XI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        pastel: {
+                            mint: '#E6F4F1',
+                            mintDark: '#2C7A7B',
+                            lavender: '#F0E6FF',
+                            lavenderDark: '#6B46C1',
+                            blue: '#E8F0FE',
+                            blueDark: '#2B6CB0',
+                            peach: '#FFE8E0',
+                            peachDark: '#C05621',
+                            yellow: '#FFF8E7',
+                            yellowDark: '#B7791F',
+                            text: '#2D3748',
+                            muted: '#718096'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom scrollbar & print styling */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 8px; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e0; border-radius: 8px; }
+        ::-webkit-scrollbar-thumb:hover { background: #a0aec0; }
+        
+        @media print {
+            .no-print { display: none !important; }
+            .print-only { display: block !important; }
+            body { background: white; color: black; }
+        }
+        
+        /* Perspective utility for flashcards */
+        .perspective-1000 { perspective: 1000px; }
+        .transform-style-3d { transform-style: preserve-3d; }
+        .backface-hidden { backface-visibility: hidden; }
+        .rotate-y-180 { transform: rotateY(180deg); }
+    </style>
+</head>
+<body class="h-full text-pastel-text font-sans antialiased bg-slate-50 flex flex-col">
+
+    <!-- LOGIN OVERLAY / SCREEN -->
+    <div id="login-screen" class="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-pastel-mint via-pastel-blue to-pastel-lavender p-4">
+        <div class="max-w-md w-full bg-white/90 backdrop-blur-md rounded-3xl p-8 shadow-xl border border-white/50 text-center relative overflow-hidden">
+            <div class="absolute -top-10 -right-10 w-32 h-32 bg-pastel-peach rounded-full blur-2xl opacity-60"></div>
+            <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-pastel-lavender rounded-full blur-2xl opacity-60"></div>
+
+            <div class="relative z-10">
+                <div class="w-20 h-20 bg-gradient-to-tr from-teal-400 to-indigo-500 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-teal-100 text-white">
+                    <i data-lucide="book-open-check" class="w-10 h-10"></i>
+                </div>
+                <h1 class="text-2xl font-bold text-slate-800">PPA Perusahaan Jasa</h1>
+                <p class="text-xs text-slate-500 mt-1 mb-6">Perangkat Pembelajaran Akuntansi Kelas XI - SMK/SMA</p>
+
+                <form id="login-form" onsubmit="handleLogin(event)" class="space-y-4 text-left">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">Nama Guru / Username</label>
+                        <div class="relative">
+                            <i data-lucide="user" class="w-5 h-5 absolute left-3 top-3 text-slate-400"></i>
+                            <input type="text" id="input-username" value="Dra. Hj. Sri Wahyuni, M.Pd." required class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-teal-400 bg-slate-50/50 text-sm font-medium">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">Mata Pelajaran</label>
+                        <select class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-teal-400 bg-slate-50/50 text-sm font-medium">
+                            <option>Praktik Akuntansi Perusahaan Jasa (Kelas XI)</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="w-full py-3 bg-gradient-to-r from-teal-500 to-indigo-600 text-white font-semibold rounded-xl shadow-lg shadow-teal-500/20 hover:opacity-95 transition flex items-center justify-center gap-2">
+                        <span>Masuk ke Dashboard</span>
+                        <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </button>
+                </form>
+                <p class="text-xs text-slate-400 mt-6">Mode Akses Cepat Guru &bull; Tanpa Password</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN APP STRUCTURE -->
+    <div id="app-container" class="hidden min-h-screen flex flex-col md:flex-row bg-slate-50">
+        
+        <!-- SIDEBAR -->
+        <aside id="sidebar" class="w-full md:w-64 bg-white border-r border-slate-100 flex flex-col justify-between shrink-0 transition-all duration-300 z-30">
+            <div>
+                <!-- Brand Header -->
+                <div class="p-5 border-b border-slate-100 flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 bg-teal-500 rounded-xl flex items-center justify-center text-white font-bold shadow-md shadow-teal-200">
+                            <i data-lucide="calculator" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <h2 class="font-bold text-sm text-slate-800 leading-tight">PPA Akuntansi</h2>
+                            <p class="text-[10px] text-teal-600 font-medium">Perusahaan Jasa XI</p>
+                        </div>
+                    </div>
+                    <button class="md:hidden text-slate-400" onclick="toggleSidebar()"><i data-lucide="x" class="w-5 h-5"></i></button>
+                </div>
+
+                <!-- Navigation Links -->
+                <nav class="p-3 space-y-1 text-sm font-medium" id="nav-menu">
+                    <!-- Nav items dynamically highlighted via JS -->
+                </nav>
+            </div>
+
+            <!-- Profile Sidebar Footer -->
+            <div class="p-4 border-t border-slate-100 bg-slate-50/50 m-3 rounded-2xl">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-indigo-100 border-2 border-indigo-200 flex items-center justify-center font-bold text-indigo-700 text-sm overflow-hidden" id="user-avatar">
+                        SW
+                    </div>
+                    <div class="overflow-hidden">
+                        <h4 class="text-xs font-bold text-slate-800 truncate" id="user-display-name">Guru Akuntansi</h4>
+                        <span class="inline-flex items-center gap-1 text-[10px] text-emerald-600 font-semibold">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Mode Aktif
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT AREA -->
+        <div class="flex-1 flex flex-col min-w-0 h-screen overflow-y-auto">
+            
+            <!-- TOP NAVBAR -->
+            <header class="bg-white border-b border-slate-100 px-6 py-3 flex items-center justify-between sticky top-0 z-20 shadow-sm/50">
+                <div class="flex items-center gap-4">
+                    <button class="md:hidden text-slate-600 p-2 rounded-lg bg-slate-100" onclick="toggleSidebar()">
+                        <i data-lucide="menu" class="w-5 h-5"></i>
+                    </button>
+                    <!-- Class Selector Dropdown -->
+                    <div class="flex items-center gap-2 bg-slate-100 px-3 py-1.5 rounded-xl border border-slate-200/60">
+                        <i data-lucide="graduation-cap" class="w-4 h-4 text-teal-600"></i>
+                        <span class="text-xs text-slate-500 font-medium">Kelas:</span>
+                        <select id="global-class-select" onchange="changeActiveClass(this.value)" class="bg-transparent text-xs font-bold text-slate-800 focus:outline-none cursor-pointer">
+                            <option value="XI AKL 1">XI AKL 1 (Akuntansi)</option>
+                            <option value="XI AKL 2">XI AKL 2 (Akuntansi)</option>
+                            <option value="XI AKL 3">XI AKL 3 (Akuntansi)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Right Header Actions -->
+                <div class="flex items-center gap-3">
+                    <div class="hidden sm:flex items-center gap-2 bg-pastel-mint/60 px-3 py-1.5 rounded-xl text-xs font-medium text-teal-800">
+                        <i data-lucide="calendar" class="w-3.5 h-3.5"></i>
+                        <span id="current-date-text">Kamis, 15 Okt 2026</span>
+                    </div>
+
+                    <button onclick="switchTab('pengaturan')" class="p-2 text-slate-500 hover:bg-slate-100 rounded-xl transition" title="Pengaturan">
+                        <i data-lucide="settings" class="w-5 h-5"></i>
+                    </button>
+
+                    <button onclick="handleLogout()" class="p-2 text-rose-500 hover:bg-rose-50 rounded-xl transition" title="Keluar">
+                        <i data-lucide="log-out" class="w-5 h-5"></i>
+                    </button>
+                </div>
+            </header>
+
+            <!-- TAB CONTENTS CONTAINER -->
+            <main class="flex-1 p-4 md:p-8 space-y-6 max-w-7xl mx-auto w-full">
+
+                <!-- 1. DASHBOARD UTAMA -->
+                <section id="tab-dashboard" class="tab-content space-y-6">
+                    <!-- Banner -->
+                    <div class="p-6 md:p-8 rounded-3xl bg-gradient-to-r from-pastel-mint via-pastel-blue to-pastel-lavender relative overflow-hidden shadow-sm border border-white/60">
+                        <div class="relative z-10 max-w-2xl">
+                            <span class="px-3 py-1 bg-white/80 text-teal-700 text-xs font-bold rounded-full uppercase tracking-wider mb-3 inline-block shadow-sm">Selamat Datang kembali!</span>
+                            <h1 class="text-2xl md:text-3xl font-extrabold text-slate-800 leading-tight">
+                                Halo, <span id="welcome-teacher-name" class="text-teal-700">Ibu Guru</span> 👋
+                            </h1>
+                            <p class="text-sm text-slate-600 mt-2">
+                                Siapkan perangkat pembelajaran Praktik Akuntansi Perusahaan Jasa untuk kelas <span class="font-bold text-slate-800" id="active-class-badge">XI AKL 1</span> dengan cepat, interaktif, dan mudah.
+                            </p>
+                            <div class="mt-5 flex flex-wrap gap-3">
+                                <button onclick="switchTab('modul')" class="px-4 py-2.5 bg-teal-600 text-white rounded-xl text-xs font-semibold hover:bg-teal-700 transition shadow-md shadow-teal-600/20 flex items-center gap-2">
+                                    <i data-lucide="file-text" class="w-4 h-4"></i> Kelola Modul Ajar
+                                </button>
+                                <button onclick="switchTab('generator-lkpd')" class="px-4 py-2.5 bg-white text-slate-700 rounded-xl text-xs font-semibold hover:bg-slate-50 transition border border-slate-200 shadow-sm flex items-center gap-2">
+                                    <i data-lucide="sparkles" class="w-4 h-4 text-purple-600"></i> Buat LKPD Studi Kasus
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Metric Cards Grid -->
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div class="p-5 bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition">
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="w-10 h-10 rounded-xl bg-pastel-mint flex items-center justify-center text-teal-700">
+                                    <i data-lucide="users" class="w-5 h-5"></i>
+                                </div>
+                                <span class="text-[10px] font-bold px-2 py-0.5 bg-teal-50 text-teal-600 rounded-full">Aktif</span>
+                            </div>
+                            <p class="text-xs font-medium text-slate-500">Kelas Diampu</p>
+                            <h3 class="text-2xl font-bold text-slate-800 mt-1">3 Kelas</h3>
+                            <p class="text-[11px] text-slate-400 mt-1">XI AKL 1, 2, & 3</p>
+                        </div>
+
+                        <div class="p-5 bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition">
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="w-10 h-10 rounded-xl bg-pastel-lavender flex items-center justify-center text-purple-700">
+                                    <i data-lucide="book-open" class="w-5 h-5"></i>
+                                </div>
+                                <span class="text-[10px] font-bold px-2 py-0.5 bg-purple-50 text-purple-600 rounded-full">Lengkap</span>
+                            </div>
+                            <p class="text-xs font-medium text-slate-500">Modul & Perangkat</p>
+                            <h3 class="text-2xl font-bold text-slate-800 mt-1">12 Modul</h3>
+                            <p class="text-[11px] text-slate-400 mt-1">Sesuai Kurikulum Merdeka</p>
+                        </div>
+
+                        <div class="p-5 bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition">
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="w-10 h-10 rounded-xl bg-pastel-peach flex items-center justify-center text-orange-700">
+                                    <i data-lucide="file-spreadsheet" class="w-5 h-5"></i>
+                                </div>
+                                <span class="text-[10px] font-bold px-2 py-0.5 bg-orange-50 text-orange-600 rounded-full">3 Kasus</span>
+                            </div>
+                            <p class="text-xs font-medium text-slate-500">LKPD Ready</p>
+                            <h3 class="text-2xl font-bold text-slate-800 mt-1">3 Studi Kasus</h3>
+                            <p class="text-[11px] text-slate-400 mt-1">Lengkap Kunci Jawaban</p>
+                        </div>
+
+                        <div class="p-5 bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition">
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="w-10 h-10 rounded-xl bg-pastel-blue flex items-center justify-center text-blue-700">
+                                    <i data-lucide="graduation-cap" class="w-5 h-5"></i>
+                                </div>
+                                <span class="text-[10px] font-bold px-2 py-0.5 bg-blue-50 text-blue-600 rounded-full">Total</span>
+                            </div>
+                            <p class="text-xs font-medium text-slate-500">Total Siswa</p>
+                            <h3 class="text-2xl font-bold text-slate-800 mt-1" id="total-students-count">96 Siswa</h3>
+                            <p class="text-[11px] text-slate-400 mt-1">32 Siswa / Kelas</p>
+                        </div>
+                    </div>
+
+                    <!-- Quick Shortcuts Grid -->
+                    <div class="space-y-3">
+                        <h3 class="text-sm font-bold text-slate-700">Akses Cepat Alat Pembelajaran</h3>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <button onclick="switchTab('modul')" class="p-4 bg-white rounded-2xl border border-slate-100 shadow-sm hover:border-teal-300 hover:bg-pastel-mint/30 transition text-left group">
+                                <div class="w-10 h-10 rounded-xl bg-teal-100 text-teal-700 flex items-center justify-center mb-3 group-hover:scale-110 transition">
+                                    <i data-lucide="file-text" class="w-5 h-5"></i>
+                                </div>
+                                <h4 class="font-bold text-xs text-slate-800">Modul & RPP</h4>
+                                <p class="text-[11px] text-slate-500 mt-0.5">Download & Edit Modul</p>
+                            </button>
+
+                            <button onclick="switchTab('simulasi')" class="p-4 bg-white rounded-2xl border border-slate-100 shadow-sm hover:border-purple-300 hover:bg-pastel-lavender/30 transition text-left group">
+                                <div class="w-10 h-10 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center mb-3 group-hover:scale-110 transition">
+                                    <i data-lucide="play-circle" class="w-5 h-5"></i>
+                                </div>
+                                <h4 class="font-bold text-xs text-slate-800">Simulasi Transaksi</h4>
+                                <p class="text-[11px] text-slate-500 mt-0.5">Praktik Siklus Akuntansi</p>
+                            </button>
+
+                            <button onclick="switchTab('mini-games')" class="p-4 bg-white rounded-2xl border border-slate-100 shadow-sm hover:border-pink-300 hover:bg-pastel-peach/30 transition text-left group">
+                                <div class="w-10 h-10 rounded-xl bg-pink-100 text-pink-700 flex items-center justify-center mb-3 group-hover:scale-110 transition">
+                                    <i data-lucide="gamepad-2" class="w-5 h-5"></i>
+                                </div>
+                                <h4 class="font-bold text-xs text-slate-800">Mini Games</h4>
+                                <p class="text-[11px] text-slate-500 mt-0.5">Debet/Kredit & Flashcard</p>
+                            </button>
+
+                            <button onclick="switchTab('presensi')" class="p-4 bg-white rounded-2xl border border-slate-100 shadow-sm hover:border-blue-300 hover:bg-pastel-blue/30 transition text-left group">
+                                <div class="w-10 h-10 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center mb-3 group-hover:scale-110 transition">
+                                    <i data-lucide="check-square" class="w-5 h-5"></i>
+                                </div>
+                                <h4 class="font-bold text-xs text-slate-800">Presensi Siswa</h4>
+                                <p class="text-[11px] text-slate-500 mt-0.5">Cek Kehadiran Hari Ini</p>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Layout 2 Columns: Calendar + Recent Activities -->
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <!-- Teaching Calendar -->
+                        <div class="lg:col-span-2 bg-white rounded-2xl p-5 border border-slate-100 shadow-sm space-y-4">
+                            <div class="flex items-center justify-between">
+                                <h3 class="font-bold text-sm text-slate-800 flex items-center gap-2">
+                                    <i data-lucide="calendar" class="w-4 h-4 text-teal-600"></i> Jadwal & Target Minggu Ini
+                                </h3>
+                                <span class="text-xs font-semibold text-slate-400">Semester Ganjil</span>
+                            </div>
+
+                            <div class="space-y-3">
+                                <div class="p-3.5 rounded-xl bg-pastel-mint/50 border border-teal-100 flex items-center justify-between">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 rounded-lg bg-teal-600 text-white font-bold text-xs flex flex-col items-center justify-center">
+                                            <span>SEN</span><span>12</span>
+                                        </div>
+                                        <div>
+                                            <h4 class="text-xs font-bold text-slate-800">Pencatatan Jurnal Umum Perusahaan Jasa</h4>
+                                            <p class="text-[11px] text-slate-500">Kelas XI AKL 1 &bull; 07.30 - 09.45 WIB</p>
+                                        </div>
+                                    </div>
+                                    <span class="px-2.5 py-1 bg-teal-100 text-teal-800 text-[10px] font-bold rounded-lg">Selesai</span>
+                                </div>
+
+                                <div class="p-3.5 rounded-xl bg-pastel-lavender/50 border border-purple-100 flex items-center justify-between">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 rounded-lg bg-purple-600 text-white font-bold text-xs flex flex-col items-center justify-center">
+                                            <span>RAB</span><span>14</span>
+                                        </div>
+                                        <div>
+                                            <h4 class="text-xs font-bold text-slate-800">Posting Buku Besar & Neraca Saldo</h4>
+                                            <p class="text-[11px] text-slate-500">Kelas XI AKL 2 &bull; 10.00 - 12.15 WIB</p>
+                                        </div>
+                                    </div>
+                                    <span class="px-2.5 py-1 bg-purple-100 text-purple-800 text-[10px] font-bold rounded-lg">Berjalan</span>
+                                </div>
+
+                                <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 rounded-lg bg-slate-400 text-white font-bold text-xs flex flex-col items-center justify-center">
+                                            <span>JUM</span><span>16</span>
+                                        </div>
+                                        <div>
+                                            <h4 class="text-xs font-bold text-slate-800">Penyusunan Kertas Kerja (Worksheet)</h4>
+                                            <p class="text-[11px] text-slate-500">Kelas XI AKL 3 &bull; 08.00 - 10.15 WIB</p>
+                                        </div>
+                                    </div>
+                                    <span class="px-2.5 py-1 bg-slate-200 text-slate-600 text-[10px] font-bold rounded-lg">Mendatang</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Activity Log -->
+                        <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm space-y-4">
+                            <h3 class="font-bold text-sm text-slate-800 flex items-center gap-2">
+                                <i data-lucide="clock" class="w-4 h-4 text-purple-600"></i> Aktivitas Terakhir
+                            </h3>
+
+                            <div class="space-y-3 text-xs">
+                                <div class="flex gap-3 pb-3 border-b border-slate-100">
+                                    <div class="w-2 h-2 rounded-full bg-teal-500 mt-1.5 shrink-0"></div>
+                                    <div>
+                                        <p class="text-slate-700 font-medium">Memperbarui Modul Ajar Jurnal Penyesuaian</p>
+                                        <span class="text-[10px] text-slate-400">2 jam yang lalu</span>
+                                    </div>
+                                </div>
+                                <div class="flex gap-3 pb-3 border-b border-slate-100">
+                                    <div class="w-2 h-2 rounded-full bg-purple-500 mt-1.5 shrink-0"></div>
+                                    <div>
+                                        <p class="text-slate-700 font-medium">Input Nilai Kuis XI AKL 1 (32 Siswa)</p>
+                                        <span class="text-[10px] text-slate-400">Kemarin, 14.20 WIB</span>
+                                    </div>
+                                </div>
+                                <div class="flex gap-3">
+                                    <div class="w-2 h-2 rounded-full bg-orange-500 mt-1.5 shrink-0"></div>
+                                    <div>
+                                        <p class="text-slate-700 font-medium">Mencetak LKPD Studi Kasus Salon Glow</p>
+                                        <span class="text-[10px] text-slate-400">13 Okt 2026</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 2. DATA SISWA & KELAS -->
+                <section id="tab-data-siswa" class="tab-content hidden space-y-6">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div>
+                            <h2 class="text-xl font-bold text-slate-800">Daftar Siswa & Kelola Kelas</h2>
+                            <p class="text-xs text-slate-500">Kelola data peserta didik untuk kelas terdaftar.</p>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button onclick="openAddStudentModal()" class="px-4 py-2 bg-teal-600 text-white rounded-xl text-xs font-semibold hover:bg-teal-700 transition flex items-center gap-2 shadow-sm">
+                                <i data-lucide="user-plus" class="w-4 h-4"></i> Tambah Siswa Baru
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Search & Filter Bar -->
+                    <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex flex-wrap gap-3 items-center justify-between">
+                        <div class="relative flex-1 min-w-[200px]">
+                            <i data-lucide="search" class="w-4 h-4 absolute left-3 top-3 text-slate-400"></i>
+                            <input type="text" id="search-student" onkeyup="renderStudentTable()" placeholder="Cari nama atau NISN..." class="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-teal-400">
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs text-slate-500 font-medium">Status:</span>
+                            <select id="filter-student-status" onchange="renderStudentTable()" class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-medium focus:outline-none">
+                                <option value="ALL">Semua Status</option>
+                                <option value="Aktif">Aktif</option>
+                                <option value="Non-aktif">Non-aktif</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Table -->
+                    <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse">
+                                <thead>
+                                    <tr class="bg-slate-50/80 text-slate-600 text-[11px] uppercase tracking-wider font-bold border-b border-slate-100">
+                                        <th class="p-4">No</th>
+                                        <th class="p-4">NISN</th>
+                                        <th class="p-4">Nama Siswa</th>
+                                        <th class="p-4">JK</th>
+                                        <th class="p-4">Kehadiran</th>
+                                        <th class="p-4">Rata-Rata Nilai</th>
+                                        <th class="p-4">Status</th>
+                                        <th class="p-4 text-center">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="student-table-body" class="text-xs divide-y divide-slate-100 text-slate-700">
+                                    <!-- Dynamic content -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 3. MODUL & PERANGKAT PEMBELAJARAN -->
+                <section id="tab-modul" class="tab-content hidden space-y-6">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div>
+                            <h2 class="text-xl font-bold text-slate-800">Modul & Perangkat Pembelajaran</h2>
+                            <p class="text-xs text-slate-500">Dokumen kurikulum standar Praktik Akuntansi Perusahaan Jasa Kelas XI.</p>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button onclick="resetModulesToStandard()" class="px-3 py-2 bg-slate-100 text-slate-700 rounded-xl text-xs font-semibold hover:bg-slate-200 transition flex items-center gap-1.5">
+                                <i data-lucide="rotate-ccw" class="w-4 h-4"></i> Reset Standar
+                            </button>
+                            <button onclick="openNewModuleModal()" class="px-4 py-2 bg-teal-600 text-white rounded-xl text-xs font-semibold hover:bg-teal-700 transition flex items-center gap-1.5 shadow-sm">
+                                <i data-lucide="plus" class="w-4 h-4"></i> Buat Modul Baru
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Document Category Tabs -->
+                    <div class="flex border-b border-slate-200 space-x-6 text-xs font-bold overflow-x-auto">
+                        <button onclick="setModuleDocTab('cp-atp')" id="doc-tab-cp-atp" class="pb-3 border-b-2 border-teal-600 text-teal-700 font-bold whitespace-nowrap flex items-center gap-2">
+                            <i data-lucide="target" class="w-4 h-4"></i> 1. CP & ATP
+                        </button>
+                        <button onclick="setModuleDocTab('modul-ajar')" id="doc-tab-modul-ajar" class="pb-3 border-b-2 border-transparent text-slate-500 hover:text-slate-800 whitespace-nowrap flex items-center gap-2">
+                            <i data-lucide="book-open" class="w-4 h-4"></i> 2. Modul Ajar (RPP)
+                        </button>
+                        <button onclick="setModuleDocTab('bahan-ajar')" id="doc-tab-bahan-ajar" class="pb-3 border-b-2 border-transparent text-slate-500 hover:text-slate-800 whitespace-nowrap flex items-center gap-2">
+                            <i data-lucide="file-text" class="w-4 h-4"></i> 3. Bahan Ajar & Handout
+                        </button>
+                        <button onclick="setModuleDocTab('rubrik')" id="doc-tab-rubrik" class="pb-3 border-b-2 border-transparent text-slate-500 hover:text-slate-800 whitespace-nowrap flex items-center gap-2">
+                            <i data-lucide="check-circle" class="w-4 h-4"></i> 4. Rubrik Penilaian
+                        </button>
+                    </div>
+
+                    <!-- Module Active Content Display -->
+                    <div id="module-content-display" class="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm space-y-6">
+                        <!-- Rendered dynamically -->
+                    </div>
+                </section>
+
+                <!-- 4. MATERI & KUIS INTERAKTIF -->
+                <section id="tab-materi" class="tab-content hidden space-y-6">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div>
+                            <h2 class="text-xl font-bold text-slate-800">Materi & Kuis Interaktif</h2>
+                            <p class="text-xs text-slate-500">Materi bacaan siswa dan bank soal kuis yang dapat diedit langsung.</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                        <!-- Left Topic Selector -->
+                        <div class="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm space-y-2 lg:col-span-1">
+                            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider px-2 mb-2">Daftar Topik Materi</h3>
+                            <div id="topic-list-container" class="space-y-1">
+                                <!-- Dynamic topics -->
+                            </div>
+                        </div>
+
+                        <!-- Right Material Detail & Quiz Editor -->
+                        <div class="lg:col-span-3 space-y-6">
+                            <!-- Material Content Box -->
+                            <div class="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm space-y-4">
+                                <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+                                    <h3 class="font-bold text-base text-slate-800 flex items-center gap-2" id="active-topic-title">
+                                        <i data-lucide="book" class="w-5 h-5 text-teal-600"></i> Pengertian & Karakteristik Perusahaan Jasa
+                                    </h3>
+                                    <button onclick="toggleEditMaterial()" id="btn-edit-material" class="px-3 py-1.5 bg-slate-100 text-slate-700 rounded-xl text-xs font-semibold hover:bg-slate-200 transition flex items-center gap-1">
+                                        <i data-lucide="edit-3" class="w-3.5 h-3.5"></i> Edit Materi
+                                    </button>
+                                </div>
+
+                                <div id="material-body-view" class="prose prose-sm max-w-none text-slate-600 leading-relaxed space-y-3">
+                                    <!-- Rendered dynamically -->
+                                </div>
+
+                                <div id="material-body-edit" class="hidden space-y-3">
+                                    <textarea id="textarea-material" rows="8" class="w-full p-4 border border-slate-200 rounded-xl text-xs font-mono focus:ring-2 focus:ring-teal-400 focus:outline-none"></textarea>
+                                    <div class="flex justify-end gap-2">
+                                        <button onclick="toggleEditMaterial()" class="px-3 py-1.5 bg-slate-100 text-slate-600 rounded-xl text-xs font-semibold">Batal</button>
+                                        <button onclick="saveMaterialContent()" class="px-4 py-1.5 bg-teal-600 text-white rounded-xl text-xs font-semibold hover:bg-teal-700">Simpan Perubahan</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Quiz Bank Box -->
+                            <div class="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm space-y-4">
+                                <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+                                    <div>
+                                        <h3 class="font-bold text-sm text-slate-800 flex items-center gap-2">
+                                            <i data-lucide="help-circle" class="w-4 h-4 text-purple-600"></i> Bank Soal & Kuis Topik Ini
+                                        </h3>
+                                        <p class="text-[11px] text-slate-400">Pengaturan durasi kuis: <span class="font-semibold text-slate-600">15 Menit</span></p>
+                                    </div>
+                                    <button onclick="openAddQuizModal()" class="px-3 py-1.5 bg-purple-600 text-white rounded-xl text-xs font-semibold hover:bg-purple-700 transition flex items-center gap-1 shadow-sm">
+                                        <i data-lucide="plus-circle" class="w-3.5 h-3.5"></i> Tambah Soal Kuis
+                                    </button>
+                                </div>
+
+                                <div id="quiz-questions-list" class="space-y-4">
+                                    <!-- Dynamic quiz questions -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 5. MINI GAMES AKUNTANSI -->
+                <section id="tab-mini-games" class="tab-content hidden space-y-6">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div>
+                            <h2 class="text-xl font-bold text-slate-800">Mini Games Pembelajaran Akuntansi</h2>
+                            <p class="text-xs text-slate-500">Media interaktif siswa untuk mengasah pemahaman dasar akuntansi secara menyenangkan.</p>
+                        </div>
+                    </div>
+
+                    <!-- Game Selection Tabs -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <button onclick="setActiveGame(1)" id="game-card-1" class="p-4 bg-white rounded-2xl border-2 border-teal-500 shadow-sm text-left hover:shadow-md transition group">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-xl bg-pastel-mint text-teal-700 flex items-center justify-center font-bold">1</div>
+                                <div>
+                                    <h3 class="font-bold text-xs text-slate-800">Debet vs Kredit</h3>
+                                    <p class="text-[10px] text-slate-500">Pengelompokan akun cepat</p>
+                                </div>
+                            </div>
+                        </button>
+
+                        <button onclick="setActiveGame(2)" id="game-card-2" class="p-4 bg-white rounded-2xl border-2 border-transparent hover:border-purple-300 shadow-sm text-left hover:shadow-md transition group">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-xl bg-pastel-lavender text-purple-700 flex items-center justify-center font-bold">2</div>
+                                <div>
+                                    <h3 class="font-bold text-xs text-slate-800">Balance Sheet Puzzle</h3>
+                                    <p class="text-[10px] text-slate-500">Penyelarasan Debit/Kredit</p>
+                                </div>
+                            </div>
+                        </button>
+
+                        <button onclick="setActiveGame(3)" id="game-card-3" class="p-4 bg-white rounded-2xl border-2 border-transparent hover:border-orange-300 shadow-sm text-left hover:shadow-md transition group">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-xl bg-pastel-peach text-orange-700 flex items-center justify-center font-bold">3</div>
+                                <div>
+                                    <h3 class="font-bold text-xs text-slate-800">Flashcard Istilah</h3>
+                                    <p class="text-[10px] text-slate-500">Kartu pengingat istilah</p>
+                                </div>
+                            </div>
+                        </button>
+                    </div>
+
+                    <!-- GAME 1 CONTAINER: DEBIT CREDIT CLASSIFIER -->
+                    <div id="game-container-1" class="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm space-y-6">
+                        <div class="flex justify-between items-center pb-4 border-b border-slate-100">
+                            <div>
+                                <h3 class="font-bold text-sm text-slate-800">Game 1: Debet vs Kredit Drag & Click</h3>
+                                <p class="text-xs text-slate-500">Tentukan posisi saldo normal dari nama akun yang muncul!</p>
+                            </div>
+                            <div class="flex items-center gap-4 text-xs font-bold">
+                                <span class="px-3 py-1 bg-teal-50 text-teal-700 rounded-lg">Skor: <span id="g1-score">0</span></span>
+                                <button onclick="resetGame1()" class="px-3 py-1 bg-slate-100 text-slate-600 rounded-lg hover:bg-slate-200">Reset</button>
+                            </div>
+                        </div>
+
+                        <div id="g1-card-area" class="max-w-md mx-auto bg-slate-50 border-2 border-dashed border-teal-200 rounded-2xl p-8 text-center space-y-4">
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-teal-600">Nama Akun Saat Ini</span>
+                            <h2 id="g1-account-name" class="text-2xl font-extrabold text-slate-800">Kas Di Bank</h2>
+                            <p class="text-xs text-slate-400">Pilih posisi saldo normal yang benar:</p>
+                            <div class="grid grid-cols-2 gap-4 pt-2">
+                                <button onclick="checkG1Answer('DEBIT')" class="py-3 bg-teal-600 text-white font-bold rounded-xl shadow-md hover:bg-teal-700 transition">DEBET</button>
+                                <button onclick="checkG1Answer('KREDIT')" class="py-3 bg-indigo-600 text-white font-bold rounded-xl shadow-md hover:bg-indigo-700 transition">KREDIT</button>
+                            </div>
+                        </div>
+                        <p id="g1-feedback" class="text-center font-bold text-xs h-4"></p>
+                    </div>
+
+                    <!-- GAME 2 CONTAINER: BALANCE PUZZLE -->
+                    <div id="game-container-2" class="hidden bg-white rounded-2xl p-6 border border-slate-100 shadow-sm space-y-6">
+                        <div class="flex justify-between items-center pb-4 border-b border-slate-100">
+                            <div>
+                                <h3 class="font-bold text-sm text-slate-800">Game 2: Debit/Credit Balancing Puzzle</h3>
+                                <p class="text-xs text-slate-500">Isi angka misteri agar Total Debit sama dengan Total Kredit!</p>
+                            </div>
+                            <button onclick="resetGame2()" class="px-3 py-1 bg-slate-100 text-xs font-bold text-slate-600 rounded-lg hover:bg-slate-200">Reset Puzzle</button>
+                        </div>
+
+                        <div class="max-w-xl mx-auto bg-pastel-lavender/40 p-6 rounded-2xl border border-purple-100 space-y-4">
+                            <div class="grid grid-cols-2 gap-6 text-xs">
+                                <!-- Debit Side -->
+                                <div class="bg-white p-4 rounded-xl shadow-sm space-y-2">
+                                    <h4 class="font-bold text-purple-800 border-b pb-1">SISI DEBIT</h4>
+                                    <div class="flex justify-between"><span>Kas</span><span class="font-semibold">Rp 10.000.000</span></div>
+                                    <div class="flex justify-between"><span>Peralatan</span><span class="font-semibold">Rp 5.000.000</span></div>
+                                    <div class="flex justify-between items-center pt-2 border-t font-bold text-purple-900">
+                                        <span>TOTAL DEBIT:</span>
+                                        <span>Rp 15.000.000</span>
+                                    </div>
+                                </div>
+
+                                <!-- Credit Side -->
+                                <div class="bg-white p-4 rounded-xl shadow-sm space-y-2">
+                                    <h4 class="font-bold text-indigo-800 border-b pb-1">SISI KREDIT</h4>
+                                    <div class="flex justify-between"><span>Utang Usaha</span><span class="font-semibold">Rp 3.000.000</span></div>
+                                    <div class="flex justify-between items-center">
+                                        <span>Modal Pemilik</span>
+                                        <input type="number" id="g2-input-modal" placeholder="???" class="w-24 px-2 py-1 bg-purple-50 border border-purple-300 rounded text-right font-bold text-purple-900">
+                                    </div>
+                                    <div class="flex justify-between items-center pt-2 border-t font-bold text-indigo-900">
+                                        <span>TOTAL KREDIT:</span>
+                                        <span id="g2-total-kredit">Rp 3.000.000</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button onclick="checkG2Balance()" class="w-full py-2.5 bg-purple-600 text-white font-bold text-xs rounded-xl shadow-md hover:bg-purple-700 transition">Periksa Keseimbangan (Balance)</button>
+                            <p id="g2-feedback" class="text-center font-bold text-xs h-4"></p>
+                        </div>
+                    </div>
+
+                    <!-- GAME 3 CONTAINER: FLASHCARD -->
+                    <div id="game-container-3" class="hidden bg-white rounded-2xl p-6 border border-slate-100 shadow-sm space-y-6">
+                        <div class="flex justify-between items-center pb-4 border-b border-slate-100">
+                            <div>
+                                <h3 class="font-bold text-sm text-slate-800">Game 3: Flashcard Istilah Akuntansi</h3>
+                                <p class="text-xs text-slate-500">Klik pada kartu untuk melihat definisi dan penjelasan!</p>
+                            </div>
+                            <div class="flex gap-2">
+                                <button onclick="prevFlashcard()" class="p-2 bg-slate-100 rounded-lg"><i data-lucide="chevron-left" class="w-4 h-4"></i></button>
+                                <span id="flashcard-index-text" class="text-xs font-bold self-center">1 / 5</span>
+                                <button onclick="nextFlashcard()" class="p-2 bg-slate-100 rounded-lg"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
+                            </div>
+                        </div>
+
+                        <div class="max-w-md mx-auto perspective-1000 my-8">
+                            <div id="flashcard-element" onclick="flipFlashcard()" class="w-full h-56 bg-gradient-to-tr from-amber-100 via-orange-100 to-amber-50 rounded-3xl p-8 border border-orange-200 shadow-lg flex flex-col items-center justify-center text-center cursor-pointer transition-all duration-500 hover:scale-105">
+                                <span class="text-[10px] font-bold text-amber-700 uppercase tracking-widest mb-2">Istilah Akuntansi</span>
+                                <h2 id="fc-term" class="text-2xl font-extrabold text-slate-800">Accrual Basis</h2>
+                                <p id="fc-def" class="hidden text-xs text-slate-700 leading-relaxed mt-2">Metode pencatatan akuntansi di mana pendapatan dan beban diakui saat terjadinya transaksi, bukan saat kas diterima/dibayar.</p>
+                                <span class="text-[10px] text-slate-400 mt-4 flex items-center gap-1"><i data-lucide="rotate-cw" class="w-3 h-3"></i> Klik untuk balik kartu</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 6. GENERATOR LKPD (STUDI KASUS) -->
+                <section id="tab-generator-lkpd" class="tab-content hidden space-y-6">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div>
+                            <h2 class="text-xl font-bold text-slate-800">Generator LKPD Berbasis Studi Kasus</h2>
+                            <p class="text-xs text-slate-500">Lembar Kerja Peserta Didik lengkap dengan transaksi & kunci jawaban terverifikasi.</p>
+                        </div>
+                        <button onclick="openCustomLKPDModal()" class="px-4 py-2 bg-purple-600 text-white rounded-xl text-xs font-semibold hover:bg-purple-700 transition flex items-center gap-1.5 shadow-sm">
+                            <i data-lucide="plus" class="w-4 h-4"></i> Buat LKPD Kustom
+                        </button>
+                    </div>
+
+                    <!-- 3 Pre-built Case Study Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- Case 1 -->
+                        <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm flex flex-col justify-between hover:shadow-md transition space-y-4">
+                            <div>
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="px-2.5 py-0.5 bg-emerald-100 text-emerald-700 font-bold text-[10px] rounded-full">Level 1 - Easy</span>
+                                    <span class="text-[10px] text-slate-400">Jurnal s/d Buku Besar</span>
+                                </div>
+                                <h3 class="font-bold text-sm text-slate-800">Salon "Glow & Shine"</h3>
+                                <p class="text-xs text-slate-500 mt-1 line-clamp-2">Usaha perawatan kecantikan dengan 8 transaksi operasional dasar bulan Oktober 2026.</p>
+                            </div>
+                            <div class="pt-4 border-t border-slate-100 flex gap-2">
+                                <button onclick="viewCaseStudy(1)" class="flex-1 py-2 bg-pastel-mint text-teal-800 rounded-xl text-xs font-bold hover:bg-teal-200 transition">Lihat & Cetak</button>
+                            </div>
+                        </div>
+
+                        <!-- Case 2 -->
+                        <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm flex flex-col justify-between hover:shadow-md transition space-y-4">
+                            <div>
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="px-2.5 py-0.5 bg-amber-100 text-amber-700 font-bold text-[10px] rounded-full">Level 2 - Medium</span>
+                                    <span class="text-[10px] text-slate-400">+ Penyesuaian & Worksheet</span>
+                                </div>
+                                <h3 class="font-bold text-sm text-slate-800">Jasa Pengiriman "Express Logistics"</h3>
+                                <p class="text-xs text-slate-500 mt-1 line-clamp-2">Usaha kurir logistik dengan perlengkapan, beban dibayar di muka, dan kertas kerja 10 kolom.</p>
+                            </div>
+                            <div class="pt-4 border-t border-slate-100 flex gap-2">
+                                <button onclick="viewCaseStudy(2)" class="flex-1 py-2 bg-pastel-blue text-blue-800 rounded-xl text-xs font-bold hover:bg-blue-200 transition">Lihat & Cetak</button>
+                            </div>
+                        </div>
+
+                        <!-- Case 3 -->
+                        <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm flex flex-col justify-between hover:shadow-md transition space-y-4">
+                            <div>
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="px-2.5 py-0.5 bg-rose-100 text-rose-700 font-bold text-[10px] rounded-full">Level 3 - Hard</span>
+                                    <span class="text-[10px] text-slate-400">Full Siklus + Laporan</span>
+                                </div>
+                                <h3 class="font-bold text-sm text-slate-800">Bengkel "Auto Care"</h3>
+                                <p class="text-xs text-slate-500 mt-1 line-clamp-2">Siklus lengkap perusahaan jasa sampai penyusunan Laporan Keuangan dan Jurnal Penutup.</p>
+                            </div>
+                            <div class="pt-4 border-t border-slate-100 flex gap-2">
+                                <button onclick="viewCaseStudy(3)" class="flex-1 py-2 bg-pastel-peach text-orange-800 rounded-xl text-xs font-bold hover:bg-orange-200 transition">Lihat & Cetak</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Case Viewer Modal / Expanded Sheet -->
+                    <div id="case-study-viewer" class="hidden bg-white rounded-2xl p-6 border border-slate-100 shadow-sm space-y-6">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center pb-4 border-b border-slate-100 gap-4">
+                            <div>
+                                <h3 class="font-bold text-base text-slate-800" id="cs-viewer-title">Salon Glow & Shine</h3>
+                                <p class="text-xs text-slate-500" id="cs-viewer-subtitle">LKPD Praktik Akuntansi Perusahaan Jasa</p>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <button onclick="toggleAnswerKey()" id="btn-toggle-answer" class="px-3 py-2 bg-amber-100 text-amber-800 rounded-xl text-xs font-bold hover:bg-amber-200 transition flex items-center gap-1.5">
+                                    <i data-lucide="key" class="w-4 h-4"></i> <span id="answer-key-status-text">Tampilkan Kunci Jawaban</span>
+                                </button>
+                                <button onclick="window.print()" class="px-3 py-2 bg-slate-800 text-white rounded-xl text-xs font-bold hover:bg-slate-900 transition flex items-center gap-1.5">
+                                    <i data-lucide="printer" class="w-4 h-4"></i> Cetak / PDF
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Case Details Content -->
+                        <div id="cs-viewer-content" class="space-y-6">
+                            <!-- Dynamic Content -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 7. SIMULASI TRANSAKSI PERUSAHAAN JASA -->
+                <section id="tab-simulasi" class="tab-content hidden space-y-6">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div>
+                            <h2 class="text-xl font-bold text-slate-800">Simulasi Transaksi Perusahaan Jasa</h2>
+                            <p class="text-xs text-slate-500">Papan praktik interaktif analisis bukti transaksi dan entri jurnal.</p>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs text-slate-500 font-medium">Pilih Level:</span>
+                            <select id="sim-level-select" onchange="changeSimLevel(this.value)" class="bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-800 focus:outline-none">
+                                <option value="1">Level 1: Analisis Bukti Transaksi</option>
+                                <option value="2">Level 2: Jurnal Umum Interaktif</option>
+                                <option value="3">Level 3: Kertas Kerja 10 Kolom</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Level 1 Simulation View -->
+                    <div id="sim-view-1" class="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm space-y-6">
+                        <div class="flex justify-between items-center pb-4 border-b border-slate-100">
+                            <h3 class="font-bold text-sm text-slate-800">Identifikasi & Analisis Bukti Transaksi</h3>
+                            <span class="text-xs font-semibold text-teal-600 bg-teal-50 px-2.5 py-1 rounded-lg">Soal 1 dari 3</span>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Proof Document Graphic -->
+                            <div class="bg-amber-50/60 p-6 rounded-2xl border-2 border-amber-200 space-y-3 font-mono text-xs text-slate-800">
+                                <div class="flex justify-between font-bold border-b border-amber-300 pb-2">
+                                    <span>SALON GLOW & SHINE</span>
+                                    <span>NOTA KONTAN</span>
+                                </div>
+                                <p class="text-[11px]">No: NK-012 &bull; Tgl: 05 Oktober 2026</p>
+                                <p class="text-[11px]">Telah terima dari: Kas / Pelanggan Umum</p>
+                                <div class="bg-white p-3 rounded-lg border border-amber-200 space-y-1 my-2">
+                                    <div class="flex justify-between"><span>Jasa Perawatan Rambut</span><span>Rp 1.500.000</span></div>
+                                </div>
+                                <p class="text-right font-bold text-sm text-slate-900">Total: Rp 1.500.000</p>
+                            </div>
+
+                            <!-- Interactive Input -->
+                            <div class="space-y-4">
+                                <h4 class="font-bold text-xs text-slate-700">Analisislah akun yang terpengaruh:</h4>
+                                <div>
+                                    <label class="block text-[11px] font-semibold text-slate-500 mb-1">Akun Sisi Debet (+)</label>
+                                    <select id="sim1-debit" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium">
+                                        <option value="">-- Pilih Akun Debet --</option>
+                                        <option value="Kas">Kas</option>
+                                        <option value="Piutang Usaha">Piutang Usaha</option>
+                                        <option value="Peralatan">Peralatan</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-semibold text-slate-500 mb-1">Akun Sisi Kredit (+)</label>
+                                    <select id="sim1-credit" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium">
+                                        <option value="">-- Pilih Akun Kredit --</option>
+                                        <option value="Pendapatan Jasa">Pendapatan Jasa</option>
+                                        <option value="Utang Usaha">Utang Usaha</option>
+                                        <option value="Modal">Modal</option>
+                                    </select>
+                                </div>
+                                <button onclick="checkSim1Answer()" class="w-full py-2.5 bg-teal-600 text-white font-bold text-xs rounded-xl shadow-md hover:bg-teal-700 transition">Periksa Jawaban Analisis</button>
+                                <p id="sim1-feedback" class="text-xs font-bold h-4 text-center"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Level 2 Simulation View -->
+                    <div id="sim-view-2" class="hidden bg-white rounded-2xl p-6 border border-slate-100 shadow-sm space-y-6">
+                        <div class="flex justify-between items-center pb-4 border-b border-slate-100">
+                            <h3 class="font-bold text-sm text-slate-800">Pencatatan Jurnal Umum Interaktif</h3>
+                            <button onclick="checkSim2Journal()" class="px-4 py-2 bg-purple-600 text-white rounded-xl text-xs font-bold hover:bg-purple-700">Validasi Jurnal</button>
+                        </div>
+
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-xs text-left border-collapse">
+                                <thead>
+                                    <tr class="bg-slate-50 text-slate-600 font-bold border-b">
+                                        <th class="p-3">Tanggal</th>
+                                        <th class="p-3">Keterangan / Nama Akun</th>
+                                        <th class="p-3">Ref</th>
+                                        <th class="p-3">Debet (Rp)</th>
+                                        <th class="p-3">Kredit (Rp)</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-100 font-mono">
+                                    <tr>
+                                        <td class="p-3">02/10/2026</td>
+                                        <td class="p-3 font-semibold text-slate-800">Kas<br><span class="pl-4 font-normal text-slate-500">Modal Ibu Glow</span></td>
+                                        <td class="p-3">111<br>311</td>
+                                        <td class="p-3">10.000.000<br>-</td>
+                                        <td class="p-3">-<br>10.000.000</td>
+                                    </tr>
+                                    <tr class="bg-purple-50/30">
+                                        <td class="p-3">08/10/2026</td>
+                                        <td class="p-3">
+                                            <input type="text" id="sim2-acc-1" value="Beban Sewa" class="w-full p-1 border rounded text-xs mb-1">
+                                            <input type="text" id="sim2-acc-2" value="  Kas" class="w-full p-1 border rounded text-xs">
+                                        </td>
+                                        <td class="p-3">511<br>111</td>
+                                        <td class="p-3"><input type="number" id="sim2-deb-1" value="1200000" class="w-24 p-1 border rounded text-xs"><br>-</td>
+                                        <td class="p-3">-<br><input type="number" id="sim2-kre-2" value="1200000" class="w-24 p-1 border rounded text-xs"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p id="sim2-feedback" class="text-xs font-bold text-center h-4"></p>
+                    </div>
+
+                    <!-- Level 3 Simulation View -->
+                    <div id="sim-view-3" class="hidden bg-white rounded-2xl p-6 border border-slate-100 shadow-sm space-y-6">
+                        <div class="flex justify-between items-center pb-4 border-b border-slate-100">
+                            <h3 class="font-bold text-sm text-slate-800">Simulator Kertas Kerja 10 Kolom</h3>
+                            <button onclick="checkSim3Worksheet()" class="px-4 py-2 bg-indigo-600 text-white rounded-xl text-xs font-bold hover:bg-indigo-700">Verifikasi Neraca Saldo Disesuaikan</button>
+                        </div>
+
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-[11px] text-center border-collapse">
+                                <thead>
+                                    <tr class="bg-slate-100 font-bold text-slate-700 border-b">
+                                        <th class="p-2 text-left" rowspan="2">Nama Akun</th>
+                                        <th class="p-2 border-l" colspan="2">Neraca Saldo</th>
+                                        <th class="p-2 border-l" colspan="2">Penyesuaian</th>
+                                        <th class="p-2 border-l" colspan="2">NS Disesuaikan</th>
+                                    </tr>
+                                    <tr class="bg-slate-50 font-semibold text-slate-600 border-b">
+                                        <th class="p-1 border-l">D</th><th class="p-1">K</th>
+                                        <th class="p-1 border-l">D</th><th class="p-1">K</th>
+                                        <th class="p-1 border-l">D</th><th class="p-1">K</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-100 font-mono text-slate-700">
+                                    <tr>
+                                        <td class="p-2 text-left font-sans font-medium">Kas</td>
+                                        <td class="p-2 border-l">8.500</td><td class="p-2">-</td>
+                                        <td class="p-2 border-l">-</td><td class="p-2">-</td>
+                                        <td class="p-2 border-l"><input type="number" id="ws-kas-d" value="8500" class="w-16 p-1 border text-center font-bold"></td>
+                                        <td class="p-2">-</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-2 text-left font-sans font-medium">Perlengkapan</td>
+                                        <td class="p-2 border-l">2.000</td><td class="p-2">-</td>
+                                        <td class="p-2 border-l">-</td><td class="p-2">1.200</td>
+                                        <td class="p-2 border-l"><input type="number" id="ws-perl-d" value="800" class="w-16 p-1 border text-center font-bold"></td>
+                                        <td class="p-2">-</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p id="sim3-feedback" class="text-xs font-bold text-center h-4"></p>
+                    </div>
+                </section>
+
+                <!-- 8. ALAT BANTU GURU (PRESENSI, NILAI, JADWAL, PENGATURAN) -->
+                
+                <!-- PRESENSI SISWA -->
+                <section id="tab-presensi" class="tab-content hidden space-y-6">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div>
+                            <h2 class="text-xl font-bold text-slate-800">Presensi Kehadiran Siswa</h2>
+                            <p class="text-xs text-slate-500">Rekap kehadiran harian siswa kelas <span class="font-bold" id="presensi-class-label">XI AKL 1</span>.</p>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <input type="date" value="2026-10-15" class="bg-white border border-slate-200 rounded-xl px-3 py-1.5 text-xs font-bold text-slate-800 focus:outline-none">
+                            <button onclick="saveAttendance()" class="px-4 py-2 bg-teal-600 text-white rounded-xl text-xs font-bold hover:bg-teal-700 shadow-sm">Simpan Presensi</button>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse text-xs">
+                                <thead>
+                                    <tr class="bg-slate-50 text-slate-600 uppercase tracking-wider font-bold border-b border-slate-100">
+                                        <th class="p-4">No</th>
+                                        <th class="p-4">Nama Siswa</th>
+                                        <th class="p-4 text-center">Hadir (H)</th>
+                                        <th class="p-4 text-center">Sakit (S)</th>
+                                        <th class="p-4 text-center">Izin (I)</th>
+                                        <th class="p-4 text-center">Alpa (A)</th>
+                                        <th class="p-4 text-right">% Kehadiran</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="attendance-table-body" class="divide-y divide-slate-100">
+                                    <!-- Dynamic Rows -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- INPUT NILAI SISWA -->
+                <section id="tab-nilai" class="tab-content hidden space-y-6">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div>
+                            <h2 class="text-xl font-bold text-slate-800">Buku Nilai Siswa</h2>
+                            <p class="text-xs text-slate-500">Penilaian Tugas, Kuis, UTS, dan UAS dengan perhitungan Nilai Akhir otomatis.</p>
+                        </div>
+                        <button onclick="saveGrades()" class="px-4 py-2 bg-teal-600 text-white rounded-xl text-xs font-bold hover:bg-teal-700 shadow-sm">Simpan Nilai</button>
+                    </div>
+
+                    <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse text-xs">
+                                <thead>
+                                    <tr class="bg-slate-50 text-slate-600 font-bold uppercase tracking-wider border-b border-slate-100">
+                                        <th class="p-4">Nama Siswa</th>
+                                        <th class="p-4 text-center">Tugas (20%)</th>
+                                        <th class="p-4 text-center">Kuis (20%)</th>
+                                        <th class="p-4 text-center">UTS (30%)</th>
+                                        <th class="p-4 text-center">UAS (30%)</th>
+                                        <th class="p-4 text-center">Nilai Akhir</th>
+                                        <th class="p-4 text-center">Predikat</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="grade-table-body" class="divide-y divide-slate-100">
+                                    <!-- Dynamic Rows -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- JADWAL PELAJARAN -->
+                <section id="tab-jadwal" class="tab-content hidden space-y-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h2 class="text-xl font-bold text-slate-800">Jadwal Mengajar Mingguan</h2>
+                            <p class="text-xs text-slate-500">Jadwal tatap muka Praktik Akuntansi Perusahaan Jasa Semester Ganjil.</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+                        <!-- Monday -->
+                        <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm space-y-3">
+                            <div class="p-2 bg-pastel-mint text-teal-800 font-bold text-xs text-center rounded-xl">SENIN</div>
+                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 space-y-1">
+                                <span class="text-[10px] text-teal-600 font-bold">07.30 - 09.45</span>
+                                <h4 class="font-bold text-xs text-slate-800">XI AKL 1</h4>
+                                <p class="text-[10px] text-slate-500">Ruang Lab Akuntansi 1</p>
+                            </div>
+                        </div>
+
+                        <!-- Tuesday -->
+                        <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm space-y-3">
+                            <div class="p-2 bg-pastel-blue text-blue-800 font-bold text-xs text-center rounded-xl">SELASA</div>
+                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 space-y-1">
+                                <span class="text-[10px] text-blue-600 font-bold">10.00 - 12.15</span>
+                                <h4 class="font-bold text-xs text-slate-800">XI AKL 3</h4>
+                                <p class="text-[10px] text-slate-500">Ruang Teori 04</p>
+                            </div>
+                        </div>
+
+                        <!-- Wednesday -->
+                        <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm space-y-3">
+                            <div class="p-2 bg-pastel-lavender text-purple-800 font-bold text-xs text-center rounded-xl">RABU</div>
+                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 space-y-1">
+                                <span class="text-[10px] text-purple-600 font-bold">07.30 - 09.45</span>
+                                <h4 class="font-bold text-xs text-slate-800">XI AKL 2</h4>
+                                <p class="text-[10px] text-slate-500">Ruang Lab Akuntansi 2</p>
+                            </div>
+                        </div>
+
+                        <!-- Thursday -->
+                        <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm space-y-3">
+                            <div class="p-2 bg-pastel-peach text-orange-800 font-bold text-xs text-center rounded-xl">KAMIS</div>
+                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 space-y-1">
+                                <span class="text-[10px] text-orange-600 font-bold">13.00 - 15.15</span>
+                                <h4 class="font-bold text-xs text-slate-800">XI AKL 1</h4>
+                                <p class="text-[10px] text-slate-500">Ruang Lab Akuntansi 1</p>
+                            </div>
+                        </div>
+
+                        <!-- Friday -->
+                        <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm space-y-3">
+                            <div class="p-2 bg-pastel-yellow text-amber-800 font-bold text-xs text-center rounded-xl">JUMAT</div>
+                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 space-y-1">
+                                <span class="text-[10px] text-amber-600 font-bold">08.00 - 10.15</span>
+                                <h4 class="font-bold text-xs text-slate-800">XI AKL 2</h4>
+                                <p class="text-[10px] text-slate-500">Ruang Lab Akuntansi 2</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- PENGATURAN -->
+                <section id="tab-pengaturan" class="tab-content hidden space-y-6">
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-800">Pengaturan Aplikasi</h2>
+                        <p class="text-xs text-slate-500">Profil pengajar, preferensi tema, dan data sistem.</p>
+                    </div>
+
+                    <div class="max-w-2xl bg-white rounded-2xl p-6 border border-slate-100 shadow-sm space-y-6">
+                        <div class="space-y-4">
+                            <h3 class="font-bold text-sm text-slate-800 border-b pb-2">Profil Pengajar</h3>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Nama Lengkap Guru</label>
+                                <input type="text" id="setting-teacher-name" value="Dra. Hj. Sri Wahyuni, M.Pd." class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">NIP / ID Guru</label>
+                                <input type="text" value="19750812 200212 2 001" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Nama Sekolah</label>
+                                <input type="text" value="SMK Negeri 1 Akuntansi Indonesia" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium">
+                            </div>
+                        </div>
+
+                        <div class="pt-4 border-t border-slate-100 space-y-3">
+                            <h3 class="font-bold text-sm text-slate-800">Manajemen Data Demo</h3>
+                            <div class="flex gap-3">
+                                <button onclick="saveProfileSettings()" class="px-4 py-2 bg-teal-600 text-white rounded-xl text-xs font-bold hover:bg-teal-700">Simpan Profil</button>
+                                <button onclick="resetAllAppData()" class="px-4 py-2 bg-rose-50 text-rose-600 rounded-xl text-xs font-bold hover:bg-rose-100">Reset Semua Data Demo</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            </main>
+        </div>
+    </div>
+
+    <!-- MODAL POPUPS CONTAINER -->
+    <div id="modal-container" class="hidden fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4">
+        <!-- Modal Card Content injected dynamically -->
+        <div id="modal-card" class="bg-white rounded-3xl p-6 max-w-lg w-full shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC & MOCK DATA -->
+    <script>
+        // GLOBAL APP STATE
+        const state = {
+            currentUser: "Dra. Hj. Sri Wahyuni, M.Pd.",
+            activeClass: "XI AKL 1",
+            activeTab: "dashboard",
+            activeModuleDocTab: "cp-atp",
+            activeTopicIndex: 0,
+            showAnswerKey: false,
+            game1Score: 0,
+            flashcardIndex: 0,
+            
+            // MOCK STUDENTS DATA
+            students: {
+                "XI AKL 1": [
+                    { nisn: "0061234561", name: "Ahmad Fauzi", gender: "L", attendance: 98, gradeAvg: 88, status: "Aktif", assignment: 88, quiz: 85, uts: 90, uas: 89 },
+                    { nisn: "0061234562", name: "Anisa Rahmawati", gender: "P", attendance: 100, gradeAvg: 92, status: "Aktif", assignment: 95, quiz: 90, uts: 92, uas: 91 },
+                    { nisn: "0061234563", name: "Budi Santoso", gender: "L", attendance: 92, gradeAvg: 78, status: "Aktif", assignment: 78, quiz: 75, uts: 80, uas: 79 },
+                    { nisn: "0061234564", name: "Citra Lestari", gender: "P", attendance: 96, gradeAvg: 85, status: "Aktif", assignment: 85, quiz: 84, uts: 86, uas: 85 },
+                    { nisn: "0061234565", name: "Deni Pratama", gender: "L", attendance: 90, gradeAvg: 75, status: "Aktif", assignment: 75, quiz: 72, uts: 78, uas: 75 }
+                ],
+                "XI AKL 2": [
+                    { nisn: "0062234501", name: "Dewi Anggraini", gender: "P", attendance: 95, gradeAvg: 86, status: "Aktif", assignment: 86, quiz: 85, uts: 88, uas: 85 },
+                    { nisn: "0062234502", name: "Eko Prasetyo", gender: "L", attendance: 88, gradeAvg: 74, status: "Aktif", assignment: 74, quiz: 70, uts: 76, uas: 76 }
+                ],
+                "XI AKL 3": [
+                    { nisn: "0063234701", name: "Fajar Hidayat", gender: "L", attendance: 94, gradeAvg: 82, status: "Aktif", assignment: 82, quiz: 80, uts: 84, uas: 82 },
+                    { nisn: "0063234702", name: "Gita Gutawa", gender: "P", attendance: 98, gradeAvg: 90, status: "Aktif", assignment: 90, quiz: 92, uts: 89, uas: 89 }
+                ]
+            },
+
+            // TOPICS & MATERIALS
+            topics: [
+                {
+                    title: "1. Pengertian Perusahaan Jasa",
+                    content: "Perusahaan jasa adalah perusahaan yang didirikan oleh seseorang atau sekelompok orang yang kegiatan utamanya memberikan layanan atau jasa kepada masyarakat/konsumen dengan tujuan memperoleh keuntungan. Characteristic utama meliputi: Intangibility (tidak berwujud), Inseparability (tidak dapat dipisahkan), Variability (berubah-ubah), dan Perishability (tidak tahan lama).",
+                    quizzes: [
+                        { q: "Manakah yang merupakan karakteristik utama jasa?", options: ["A. Berwujud padat", "B. Intangibility (Tidak berwujud)", "C. Dapat disimpan lama", "D. Selalu seragam"], answer: 1 }
+                    ]
+                },
+                {
+                    title: "2. Bukti Transaksi",
+                    content: "Bukti transaksi merupakan dokumen sumber pendukung yang mencatat setiap peristiwa keuangan. Contoh bukti transaksi internal: Bukti Kas Masuk, Bukti Kas Keluar, Memo. Bukti transaksi eksternal: Kuitansi, Nota Kontan, Faktur, Nota Debet, Nota Kredit.",
+                    quizzes: [
+                        { q: "Bukti pembelian barang secara tunai yang dikeluarkan oleh penjual dinamakan...", options: ["A. Faktur", "B. Kuitansi", "C. Nota Kontan", "D. Memo"], answer: 2 }
+                    ]
+                },
+                {
+                    title: "3. Jurnal Umum",
+                    content: "Jurnal umum adalah formulir pencatatan kronologis dari seluruh transaksi keuangan perusahaan jasa berdasarkan analisis debet dan kredit akun yang bersangkutan.",
+                    quizzes: [
+                        { q: "Setoran modal berupa uang tunai akan dicatat di jurnal umum pada posisi...", options: ["A. Kas (D), Modal (K)", "B. Modal (D), Kas (K)", "C. Beban (D), Kas (K)", "D. Utang (D), Modal (K)"], answer: 0 }
+                    ]
+                },
+                { title: "4. Buku Besar (Ledger)", content: "Proses mengelompokkan akun dari jurnal umum ke masing-masing saldo akun.", quizzes: [] },
+                { title: "5. Neraca Saldo", content: "Daftar saldo akhir dari seluruh akun buku besar pada periode tertentu.", quizzes: [] },
+                { title: "6. Jurnal Penyesuaian", content: "Jurnal untuk menyesuaikan saldo akun agar mencerminkan keadaan sebenarnya.", quizzes: [] },
+                { title: "7. Kertas Kerja (Worksheet)", content: "Lembar kerja 10 kolom untuk mempermudah penyusunan laporan keuangan.", quizzes: [] },
+                { title: "8. Laporan Keuangan", content: "Laporan Laba Rugi, Laporan Perubahan Ekuitas, dan Laporan Posisi Keuangan.", quizzes: [] },
+                { title: "9. Jurnal Penutup", content: "Menutup akun nominal (Pendapatan & Beban) pada akhir periode.", quizzes: [] }
+            ],
+
+            // FLASHCARDS MOCK
+            flashcards: [
+                { term: "Accrual Basis", def: "Pengakuan pendapatan & beban saat terjadi transaksi, bukan saat kas diterima/dibayar." },
+                { term: "Posting", def: "Proses memindahkan catatan transaksi dari Jurnal Umum ke Buku Besar." },
+                { term: "Depresiasi", def: "Alokasi sistematis jumlah yang dapat disusutkan dari aset tetap selama umur manfaatnya." },
+                { term: "Jurnal Pembalik", def: "Jurnal opsional pada awal periode untuk membalik AJP tertentu." },
+                { term: "Akun Nominal", def: "Akun sementara (Pendapatan & Beban) yang ditutup pada akhir periode." }
+            ],
+
+            // CASE STUDIES MOCK
+            caseStudies: {
+                1: {
+                    title: "Studi Kasus 1: Salon Kecantikan 'Glow & Shine'",
+                    level: "Level 1 - Easy",
+                    desc: "Ibu Glow mendirikan Salon Glow & Shine pada bulan Oktober 2026.",
+                    transactions: [
+                        "02 Okt: Ibu Glow menyetorkan uang tunai sebesar Rp 15.000.000 sebagai modal awal.",
+                        "05 Okt: Membeli peralatan salon seharga Rp 5.000.000 secara tunai.",
+                        "10 Okt: Menerima pendapatan jasa rias pengantin sebesar Rp 3.500.000 secara tunai.",
+                        "15 Okt: Membayar beban listrik dan air bulan ini sebesar Rp 450.000."
+                    ],
+                    answerKey: "Jurnal Umum:\n02/10: [D] Kas Rp 15.000.000 | [K] Modal Ibu Glow Rp 15.000.000\n05/10: [D] Peralatan Rp 5.000.000 | [K] Kas Rp 5.000.000\n10/10: [D] Kas Rp 3.500.000 | [K] Pendapatan Jasa Rp 3.500.000\n15/10: [D] Beban Listrik & Air Rp 450.000 | [K] Kas Rp 450.000\n\nTotal Saldo Kas Akhir: Rp 13.050.000"
+                },
+                2: {
+                    title: "Studi Kasus 2: Jasa Pengiriman 'Express Logistics'",
+                    level: "Level 2 - Medium",
+                    desc: "Siklus akuntansi dengan jurnal penyesuaian perlengkapan dan sewa dibayar di muka.",
+                    transactions: [
+                        "01 Okt: Membayar sewa kantor untuk 1 tahun Rp 12.000.000 (dicatat sebagai Sewa Dibayar di Muka).",
+                        "12 Okt: Membeli perlengkapan kantor Rp 2.000.000 tunai.",
+                        "31 Okt: Perlengkapan tersisa di akhir bulan senilai Rp 800.000."
+                    ],
+                    answerKey: "AJP (31 Okt):\n1. Beban Sewa (D) Rp 1.000.000 | Sewa Dibayar di Muka (K) Rp 1.000.000\n2. Beban Perlengkapan (D) Rp 1.200.000 | Perlengkapan (K) Rp 1.200.000"
+                },
+                3: {
+                    title: "Studi Kasus 3: Bengkel & Cuci Mobil 'Auto Care'",
+                    level: "Level 3 - Hard",
+                    desc: "Full siklus akuntansi perusahaan jasa lengkap sampai laporan keuangan.",
+                    transactions: [
+                        "Siklus komprehensif mencakup Pendapatan Diterima di Muka, Penyusutan Peralatan 10%, Laporan Laba Rugi, dan Jurnal Penutup."
+                    ],
+                    answerKey: "Laporan Laba Rugi Auto Care:\nTotal Pendapatan Jasa: Rp 28.500.000\nTotal Beban Operasional: Rp 12.200.000\nLaba Bersih Perusahaan: Rp 16.300.000"
+                }
+            }
+        };
+
+        // NAV CONFIG
+        const navItems = [
+            { id: "dashboard", label: "Dashboard Utama", icon: "layout-dashboard" },
+            { id: "data-siswa", label: "Pilihan Kelas & Siswa", icon: "users" },
+            { id: "modul", label: "Modul & Perangkat Ajar", icon: "book-open" },
+            { id: "materi", label: "Materi & Kuis", icon: "file-text" },
+            { id: "mini-games", label: "Mini Games Akuntansi", icon: "gamepad-2" },
+            { id: "generator-lkpd", label: "Generator LKPD Kasus", icon: "sparkles" },
+            { id: "simulasi", label: "Simulasi Transaksi", icon: "play-circle" },
+            { id: "presensi", label: "Presensi Siswa", icon: "check-square" },
+            { id: "nilai", label: "Input Nilai Siswa", icon: "award" },
+            { id: "jadwal", label: "Jadwal Mengajar", icon: "calendar" },
+            { id: "pengaturan", label: "Pengaturan", icon: "settings" }
+        ];
+
+        // INITIALIZATION
+        window.onload = function() {
+            renderNavMenu();
+            renderStudentTable();
+            renderTopicsList();
+            renderTopicDetail();
+            renderAttendanceTable();
+            renderGradeTable();
+            lucide.createIcons();
+        };
+
+        // LOGIN HANDLER
+        function handleLogin(e) {
+            e.preventDefault();
+            const username = document.getElementById('input-username').value;
+            if (username) {
+                state.currentUser = username;
+                document.getElementById('user-display-name').innerText = username;
+                document.getElementById('welcome-teacher-name').innerText = username;
+                document.getElementById('user-avatar').innerText = username.split(' ').map(n=>n[0]).slice(0,2).join('');
+                document.getElementById('login-screen').classList.add('hidden');
+                document.getElementById('app-container').classList.remove('hidden');
+            }
+        }
+
+        function handleLogout() {
+            document.getElementById('login-screen').classList.remove('hidden');
+            document.getElementById('app-container').classList.add('hidden');
+        }
+
+        // NAVIGATION SWITCHER
+        function renderNavMenu() {
+            const container = document.getElementById('nav-menu');
+            container.innerHTML = navItems.map(item => `
+                <button onclick="switchTab('${item.id}')" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition ${state.activeTab === item.id ? 'bg-teal-50 text-teal-700' : 'text-slate-600 hover:bg-slate-100'}">
+                    <i data-lucide="${item.icon}" class="w-4 h-4"></i>
+                    <span>${item.label}</span>
+                </button>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        function switchTab(tabId) {
+            state.activeTab = tabId;
+            renderNavMenu();
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            const target = document.getElementById(`tab-${tabId}`);
+            if (target) target.classList.remove('hidden');
+            
+            // Re-render sub-components if needed
+            if (tabId === 'data-siswa') renderStudentTable();
+            if (tabId === 'modul') setModuleDocTab(state.activeModuleDocTab);
+            if (tabId === 'presensi') renderAttendanceTable();
+            if (tabId === 'nilai') renderGradeTable();
+        }
+
+        function changeActiveClass(className) {
+            state.activeClass = className;
+            document.getElementById('active-class-badge').innerText = className;
+            document.getElementById('presensi-class-label').innerText = className;
+            renderStudentTable();
+            renderAttendanceTable();
+            renderGradeTable();
+        }
+
+        // DATA SISWA LOGIC
+        function renderStudentTable() {
+            const tbody = document.getElementById('student-table-body');
+            const list = state.students[state.activeClass] || [];
+            const search = document.getElementById('search-student')?.value.toLowerCase() || '';
+            const statusFilter = document.getElementById('filter-student-status')?.value || 'ALL';
+
+            const filtered = list.filter(s => {
+                const matchSearch = s.name.toLowerCase().includes(search) || s.nisn.includes(search);
+                const matchStatus = statusFilter === 'ALL' || s.status === statusFilter;
+                return matchSearch && matchStatus;
+            });
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" class="p-6 text-center text-slate-400">Tidak ada data siswa ditemukan</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = filtered.map((s, idx) => `
+                <tr class="hover:bg-slate-50/80 transition">
+                    <td class="p-4 font-bold text-slate-400">${idx + 1}</td>
+                    <td class="p-4 font-mono">${s.nisn}</td>
+                    <td class="p-4 font-bold text-slate-800">${s.name}</td>
+                    <td class="p-4"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${s.gender === 'L' ? 'bg-blue-50 text-blue-600' : 'bg-pink-50 text-pink-600'}">${s.gender}</span></td>
+                    <td class="p-4"><span class="font-bold text-emerald-600">${s.attendance}%</span></td>
+                    <td class="p-4 font-bold text-slate-800">${s.gradeAvg}</td>
+                    <td class="p-4"><span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold ${s.status === 'Aktif' ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'}">${s.status}</span></td>
+                    <td class="p-4 text-center">
+                        <button onclick="deleteStudent('${s.nisn}')" class="p-1.5 text-rose-500 hover:bg-rose-50 rounded-lg"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        function openAddStudentModal() {
+            const modal = document.getElementById('modal-container');
+            const card = document.getElementById('modal-card');
+            modal.classList.remove('hidden');
+            card.innerHTML = `
+                <h3 class="font-bold text-base text-slate-800">Tambah Siswa Baru</h3>
+                <form onsubmit="saveNewStudent(event)" class="space-y-3 text-xs">
+                    <div>
+                        <label class="block font-semibold mb-1">NISN</label>
+                        <input type="text" id="new-nisn" required class="w-full p-2.5 border rounded-xl">
+                    </div>
+                    <div>
+                        <label class="block font-semibold mb-1">Nama Lengkap Siswa</label>
+                        <input type="text" id="new-name" required class="w-full p-2.5 border rounded-xl">
+                    </div>
+                    <div>
+                        <label class="block font-semibold mb-1">Jenis Kelamin</label>
+                        <select id="new-gender" class="w-full p-2.5 border rounded-xl">
+                            <option value="L">Laki-laki</option>
+                            <option value="P">Perempuan</option>
+                        </select>
+                    </div>
+                    <div class="flex justify-end gap-2 pt-2">
+                        <button type="button" onclick="closeModal()" class="px-4 py-2 bg-slate-100 rounded-xl">Batal</button>
+                        <button type="submit" class="px-4 py-2 bg-teal-600 text-white font-bold rounded-xl">Simpan</button>
+                    </div>
+                </form>
+            `;
+        }
+
+        function saveNewStudent(e) {
+            e.preventDefault();
+            const nisn = document.getElementById('new-nisn').value;
+            const name = document.getElementById('new-name').value;
+            const gender = document.getElementById('new-gender').value;
+
+            if (!state.students[state.activeClass]) state.students[state.activeClass] = [];
+            state.students[state.activeClass].push({
+                nisn, name, gender, attendance: 100, gradeAvg: 80, status: "Aktif", assignment: 80, quiz: 80, uts: 80, uas: 80
+            });
+            closeModal();
+            renderStudentTable();
+        }
+
+        function deleteStudent(nisn) {
+            state.students[state.activeClass] = state.students[state.activeClass].filter(s => s.nisn !== nisn);
+            renderStudentTable();
+        }
+
+        function closeModal() {
+            document.getElementById('modal-container').classList.add('hidden');
+        }
+
+        // MODULE DOCUMENTS LOGIC
+        function setModuleDocTab(docType) {
+            state.activeModuleDocTab = docType;
+            const container = document.getElementById('module-content-display');
+            
+            const docs = {
+                'cp-atp': `
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center border-b pb-3">
+                            <h3 class="font-bold text-sm text-slate-800">Capaian Pembelajaran (CP) & ATP</h3>
+                            <span class="text-xs text-teal-600 font-semibold bg-teal-50 px-3 py-1 rounded-full">Fase F - Kelas XI</span>
+                        </div>
+                        <div class="space-y-2 text-xs text-slate-600">
+                            <p class="font-bold text-slate-800">Elemen: Praktik Akuntansi Perusahaan Jasa</p>
+                            <p>Pada akhir Fase F, peserta didik mampu menganalisis dokumen sumber, mencatat transaksi ke dalam jurnal umum, melakukan posting ke buku besar, menyusun neraca saldo, membuat jurnal penyesuaian, menyusun kertas kerja, hingga menyajikan laporan keuangan perusahaan jasa secara akurat.</p>
+                        </div>
+                    </div>
+                `,
+                'modul-ajar': `
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center border-b pb-3">
+                            <h3 class="font-bold text-sm text-slate-800">Modul Ajar (RPP Deep Dive)</h3>
+                            <span class="text-xs text-purple-600 font-semibold bg-purple-50 px-3 py-1 rounded-full">24 JP (6 Pertemuan)</span>
+                        </div>
+                        <p class="text-xs text-slate-600">Model Pembelajaran: Problem-Based Learning (PBL) & Project-Based Learning (PjBL).</p>
+                    </div>
+                `,
+                'bahan-ajar': `
+                    <div class="space-y-4">
+                        <h3 class="font-bold text-sm text-slate-800 border-b pb-3">Bahan Ajar & Handout Siswa</h3>
+                        <p class="text-xs text-slate-600">Ringkasan rumus saldo normal, tabel alur pencatatan jurnal, dan lembar studi kasus komprehensif.</p>
+                    </div>
+                `,
+                'rubrik': `
+                    <div class="space-y-4">
+                        <h3 class="font-bold text-sm text-slate-800 border-b pb-3">Rubrik Penilaian & Asesmen</h3>
+                        <p class="text-xs text-slate-600">Skor Ketepatan Analisis Debet/Kredit (40%), Ketelitian Angka (30%), Kerapian & Format (30%).</p>
+                    </div>
+                `
+            };
+            container.innerHTML = docs[docType] || '';
+        }
+
+        // MATERI & QUIZ LOGIC
+        function renderTopicsList() {
+            const container = document.getElementById('topic-list-container');
+            container.innerHTML = state.topics.map((t, idx) => `
+                <button onclick="selectTopic(${idx})" class="w-full text-left p-2.5 rounded-xl text-xs font-semibold transition ${state.activeTopicIndex === idx ? 'bg-teal-50 text-teal-700 font-bold' : 'text-slate-600 hover:bg-slate-50'}">
+                    ${t.title}
+                </button>
+            `).join('');
+        }
+
+        function selectTopic(idx) {
+            state.activeTopicIndex = idx;
+            renderTopicsList();
+            renderTopicDetail();
+        }
+
+        function renderTopicDetail() {
+            const topic = state.topics[state.activeTopicIndex];
+            document.getElementById('active-topic-title').innerHTML = `<i data-lucide="book" class="w-5 h-5 text-teal-600"></i> ${topic.title}`;
+            document.getElementById('material-body-view').innerText = topic.content;
+            document.getElementById('textarea-material').value = topic.content;
+
+            const qList = document.getElementById('quiz-questions-list');
+            if (!topic.quizzes || topic.quizzes.length === 0) {
+                qList.innerHTML = `<p class="text-xs text-slate-400 italic">Belum ada kuis untuk topik ini.</p>`;
+            } else {
+                qList.innerHTML = topic.quizzes.map((q, i) => `
+                    <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-100 space-y-2 text-xs">
+                        <p class="font-bold text-slate-800">${i + 1}. ${q.q}</p>
+                        <div class="grid grid-cols-2 gap-2 text-slate-600">
+                            ${q.options.map((opt, optIdx) => `<div class="p-2 bg-white rounded-lg border ${optIdx === q.answer ? 'border-emerald-500 font-bold text-emerald-700 bg-emerald-50/50' : ''}">${opt}</div>`).join('')}
+                        </div>
+                    </div>
+                `).join('');
+            }
+            lucide.createIcons();
+        }
+
+        function toggleEditMaterial() {
+            document.getElementById('material-body-view').classList.toggle('hidden');
+            document.getElementById('material-body-edit').classList.toggle('hidden');
+        }
+
+        function saveMaterialContent() {
+            const val = document.getElementById('textarea-material').value;
+            state.topics[state.activeTopicIndex].content = val;
+            toggleEditMaterial();
+            renderTopicDetail();
+        }
+
+        // MINI GAMES LOGIC
+        function setActiveGame(gameNum) {
+            document.getElementById('game-container-1').classList.add('hidden');
+            document.getElementById('game-container-2').classList.add('hidden');
+            document.getElementById('game-container-3').classList.add('hidden');
+            document.getElementById(`game-container-${gameNum}`).classList.remove('hidden');
+        }
+
+        // Game 1
+        const g1Accounts = [
+            { name: "Kas Di Bank", type: "DEBIT" },
+            { name: "Utang Usaha", type: "KREDIT" },
+            { name: "Beban Gaji", type: "DEBIT" },
+            { name: "Pendapatan Jasa", type: "KREDIT" },
+            { name: "Modal Pemilik", type: "KREDIT" },
+            { name: "Peralatan Salon", type: "DEBIT" }
+        ];
+        let g1Idx = 0;
+
+        function checkG1Answer(choice) {
+            const current = g1Accounts[g1Idx];
+            const feedback = document.getElementById('g1-feedback');
+            if (choice === current.type) {
+                state.game1Score += 10;
+                feedback.innerText = "Benar! +10 Poin";
+                feedback.className = "text-center font-bold text-xs h-4 text-emerald-600";
+            } else {
+                feedback.innerText = "Kurang tepat!";
+                feedback.className = "text-center font-bold text-xs h-4 text-rose-600";
+            }
+            document.getElementById('g1-score').innerText = state.game1Score;
+            g1Idx = (g1Idx + 1) % g1Accounts.length;
+            document.getElementById('g1-account-name').innerText = g1Accounts[g1Idx].name;
+        }
+
+        function resetGame1() {
+            state.game1Score = 0;
+            g1Idx = 0;
+            document.getElementById('g1-score').innerText = "0";
+            document.getElementById('g1-account-name').innerText = g1Accounts[0].name;
+            document.getElementById('g1-feedback').innerText = "";
+        }
+
+        // Game 2
+        function checkG2Balance() {
+            const val = parseFloat(document.getElementById('g2-input-modal').value);
+            const feedback = document.getElementById('g2-feedback');
+            if (val === 12000000) {
+                feedback.innerText = "Selamat! Balance / Seimbang!";
+                feedback.className = "text-center font-bold text-xs h-4 text-emerald-600";
+            } else {
+                feedback.innerText = "Belum seimbang. Coba hitung selisihnya lagi!";
+                feedback.className = "text-center font-bold text-xs h-4 text-rose-600";
+            }
+        }
+
+        // Game 3 Flashcard
+        function flipFlashcard() {
+            document.getElementById('fc-def').classList.toggle('hidden');
+        }
+
+        function nextFlashcard() {
+            state.flashcardIndex = (state.flashcardIndex + 1) % state.flashcards.length;
+            updateFlashcardView();
+        }
+
+        function prevFlashcard() {
+            state.flashcardIndex = (state.flashcardIndex - 1 + state.flashcards.length) % state.flashcards.length;
+            updateFlashcardView();
+        }
+
+        function updateFlashcardView() {
+            const fc = state.flashcards[state.flashcardIndex];
+            document.getElementById('fc-term').innerText = fc.term;
+            document.getElementById('fc-def').innerText = fc.def;
+            document.getElementById('fc-def').classList.add('hidden');
+            document.getElementById('flashcard-index-text').innerText = `${state.flashcardIndex + 1} / ${state.flashcards.length}`;
+        }
+
+        // CASE STUDY / LKPD LOGIC
+        function viewCaseStudy(num) {
+            const cs = state.caseStudies[num];
+            document.getElementById('case-study-viewer').classList.remove('hidden');
+            document.getElementById('cs-viewer-title').innerText = cs.title;
+            document.getElementById('cs-viewer-subtitle').innerText = `${cs.level} - ${cs.desc}`;
+
+            const container = document.getElementById('cs-viewer-content');
+            container.innerHTML = `
+                <div class="space-y-3">
+                    <h4 class="font-bold text-xs text-slate-700 uppercase">Daftar Transaksi Operasional:</h4>
+                    <ul class="list-disc list-inside text-xs text-slate-600 space-y-1.5 bg-slate-50 p-4 rounded-xl border border-slate-100">
+                        ${cs.transactions.map(t => `<li>${t}</li>`).join('')}
+                    </ul>
+                </div>
+                <div id="answer-key-box" class="${state.showAnswerKey ? '' : 'hidden'} p-4 bg-amber-50 rounded-xl border border-amber-200 text-xs font-mono space-y-2">
+                    <h5 class="font-bold text-amber-800 font-sans">KUNCI JAWABAN VERIFIKASI GURU:</h5>
+                    <pre class="whitespace-pre-wrap text-slate-700">${cs.answerKey}</pre>
+                </div>
+            `;
+        }
+
+        function toggleAnswerKey() {
+            state.showAnswerKey = !state.showAnswerKey;
+            document.getElementById('answer-key-status-text').innerText = state.showAnswerKey ? "Sembunyikan Kunci Jawaban" : "Tampilkan Kunci Jawaban";
+            const box = document.getElementById('answer-key-box');
+            if (box) box.classList.toggle('hidden');
+        }
+
+        // SIMULATION LOGIC
+        function changeSimLevel(lvl) {
+            document.getElementById('sim-view-1').classList.add('hidden');
+            document.getElementById('sim-view-2').classList.add('hidden');
+            document.getElementById('sim-view-3').classList.add('hidden');
+            document.getElementById(`sim-view-${lvl}`).classList.remove('hidden');
+        }
+
+        function checkSim1Answer() {
+            const deb = document.getElementById('sim1-debit').value;
+            const kre = document.getElementById('sim1-credit').value;
+            const fb = document.getElementById('sim1-feedback');
+            if (deb === 'Kas' && kre === 'Pendapatan Jasa') {
+                fb.innerText = "Benar! Penerimaan tunai menambah Kas (Debet) & Pendapatan (Kredit).";
+                fb.className = "text-xs font-bold h-4 text-center text-emerald-600";
+            } else {
+                fb.innerText = "Jawaban belum tepat. Periksa kembali bukti transaksi Nota Kontan!";
+                fb.className = "text-xs font-bold h-4 text-center text-rose-600";
+            }
+        }
+
+        // PRESENSI & NILAI TABLES
+        function renderAttendanceTable() {
+            const tbody = document.getElementById('attendance-table-body');
+            const list = state.students[state.activeClass] || [];
+            tbody.innerHTML = list.map((s, i) => `
+                <tr class="hover:bg-slate-50">
+                    <td class="p-4 font-bold text-slate-400">${i + 1}</td>
+                    <td class="p-4 font-bold text-slate-800">${s.name}</td>
+                    <td class="p-4 text-center"><input type="radio" name="att-${i}" checked class="accent-teal-600"></td>
+                    <td class="p-4 text-center"><input type="radio" name="att-${i}" class="accent-amber-600"></td>
+                    <td class="p-4 text-center"><input type="radio" name="att-${i}" class="accent-blue-600"></td>
+                    <td class="p-4 text-center"><input type="radio" name="att-${i}" class="accent-rose-600"></td>
+                    <td class="p-4 text-right font-bold text-emerald-600">${s.attendance}%</td>
+                </tr>
+            `).join('');
+        }
+
+        function renderGradeTable() {
+            const tbody = document.getElementById('grade-table-body');
+            const list = state.students[state.activeClass] || [];
+            tbody.innerHTML = list.map((s, i) => {
+                const finalGrade = Math.round((s.assignment * 0.2) + (s.quiz * 0.2) + (s.uts * 0.3) + (s.uas * 0.3));
+                const pred = finalGrade >= 88 ? 'A' : finalGrade >= 78 ? 'B' : 'C';
+                return `
+                    <tr class="hover:bg-slate-50">
+                        <td class="p-4 font-bold text-slate-800">${s.name}</td>
+                        <td class="p-4 text-center"><input type="number" value="${s.assignment}" class="w-16 p-1 border rounded text-center"></td>
+                        <td class="p-4 text-center"><input type="number" value="${s.quiz}" class="w-16 p-1 border rounded text-center"></td>
+                        <td class="p-4 text-center"><input type="number" value="${s.uts}" class="w-16 p-1 border rounded text-center"></td>
+                        <td class="p-4 text-center"><input type="number" value="${s.uas}" class="w-16 p-1 border rounded text-center"></td>
+                        <td class="p-4 text-center font-bold text-teal-700">${finalGrade}</td>
+                        <td class="p-4 text-center"><span class="px-2 py-0.5 bg-teal-100 text-teal-800 font-bold rounded-lg">${pred}</span></td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('-translate-x-full');
+        }
+    </script>
+</body>
+</html>
